@@ -2,6 +2,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Scanner;
 
 public class MainTest {
@@ -17,7 +19,8 @@ public class MainTest {
                         "2 7 2 2 2\n" +
                         "5 3 4 2 1"
         );
-        Assert.assertEquals(Main.findDeterminant(a), 89f, 0.0001);
+        Main.gauss(a);
+        Assert.assertEquals(Main.findDeterminant(a), 89f, 0.1);
     }
 
     @Test
@@ -31,7 +34,8 @@ public class MainTest {
                         "2 -3 2 1 2\n" +
                         "5 4 3 2 1"
         );
-        Assert.assertEquals(Main.findDeterminant(a), -1956f, 0.0001);
+        Main.gauss(a);
+        Assert.assertEquals(Main.findDeterminant(a), -1956f, 0.1);
     }
 
     @Test
@@ -46,7 +50,8 @@ public class MainTest {
                         "4 5 1 5 5 1\n" +
                         "6 -6 0 -1 0 6"
         );
-        Assert.assertEquals(Main.findDeterminant(a), -1940f, 0.0001);
+        Main.gauss(a);
+        Assert.assertEquals(Main.findDeterminant(a), -1940f, 0.1);
     }
 
     @Test
@@ -60,7 +65,8 @@ public class MainTest {
                         "2 6,856 2 2 2\n" +
                         "5,002 3 4 2 1"
         );
-        Assert.assertEquals(Main.findDeterminant(a), 79.60632f, 0.0001);
+        Main.gauss(a);
+        Assert.assertEquals(Main.findDeterminant(a), 95.87837f, 0.1);
     }
 
     @Test
@@ -74,7 +80,23 @@ public class MainTest {
                         "2 6,856 2 2.111 2\n" +
                         "5,002 3,707 4 2 1"
         );
-        Assert.assertEquals(Main.findDeterminant(a), 253.03221934478f, 0.0001);
+        Main.gauss(a);
+        Assert.assertEquals(Main.findDeterminant(a), 272.031376f, 0.1);
+    }
+
+    @Test
+    public void testMain6() {
+
+        ArrayList<ArrayList<Double>> a = getListFromString(
+                "5\n" +
+                        "6,39 -2,75 11,48 2,00 1\n" +
+                        "1,72 -4,8 -5,56 -0,5994 3,2003\n" +
+                        "0,48 10 -2,9528 0,8326 4,1562\n" +
+                        "5,57 3 9,8 3,5348 3,5842\n" +
+                        "1,11 2,28 0,86725 7,8 -0,7744"
+        );
+        Main.gauss(a);
+        Assert.assertEquals(Main.findDeterminant(a), -8361.1276424491f, 0.1);
     }
 
 
