@@ -106,8 +106,8 @@ public class Main {
         }
         matrix_start = new ArrayList<>(matrix);
         printMatrix("Введенная матрица: ");
-        System.out.printf("Определитель матрицы = %f\n", findDeterminant(matrix));
         gauss();
+        System.out.printf("Определитель матрицы = %f\n", findDeterminant(matrix));
         printMatrix("Треугольная матрица: ");
         ArrayList<Double> vars = getVars();
         System.out.printf("Решение системы: %s\n", vars);
@@ -127,15 +127,21 @@ public class Main {
     }
 
     public static double findDeterminant(ArrayList<ArrayList<Double>> matrix) {
-        double[][] m = new double[matrix.size()][matrix.size()];
+//        double[][] m = new double[matrix.size()][matrix.size()];
+//        for (int i = 0; i < matrix.size(); i++) {
+//            ArrayList<Double> doubles = matrix.get(i);
+//            for (int i1 = 0; i1 < doubles.size() - 1; i1++) {
+//                Double aDouble = doubles.get(i1);
+//                m[i][i1] = aDouble;
+//            }
+//        }
+//        return findDeterminant(m, m.length);
+        double res = 1;
         for (int i = 0; i < matrix.size(); i++) {
             ArrayList<Double> doubles = matrix.get(i);
-            for (int i1 = 0; i1 < doubles.size() - 1; i1++) {
-                Double aDouble = doubles.get(i1);
-                m[i][i1] = aDouble;
-            }
+            res *= doubles.get(i);
         }
-        return findDeterminant(m, m.length);
+        return res;
     }
 
     private static double findDeterminant(double[][] a, int n) {
