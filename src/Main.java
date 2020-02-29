@@ -4,7 +4,6 @@ import java.util.*;
 public class Main {
     private static ArrayList<ArrayList<Double>> matrix_start = new ArrayList<>();
     private static ArrayList<ArrayList<Double>> matrix = new ArrayList<>();
-    private static int count = 0;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -123,7 +122,6 @@ public class Main {
                 max = doubles.get(row);
                 matrix.remove(doubles);
                 matrix.add(row, doubles);
-                count++;
             }
         }
     }
@@ -132,7 +130,7 @@ public class Main {
         double res = 1;
         for (int i = 0; i < matrix.size(); i++) {
             ArrayList<Double> doubles = matrix.get(i);
-            res *= Math.pow(-1, count) * doubles.get(i);
+            res *= doubles.get(i);
         }
         return res;
     }
