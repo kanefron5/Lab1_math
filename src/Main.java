@@ -127,15 +127,6 @@ public class Main {
     }
 
     public static double findDeterminant(ArrayList<ArrayList<Double>> matrix) {
-//        double[][] m = new double[matrix.size()][matrix.size()];
-//        for (int i = 0; i < matrix.size(); i++) {
-//            ArrayList<Double> doubles = matrix.get(i);
-//            for (int i1 = 0; i1 < doubles.size() - 1; i1++) {
-//                Double aDouble = doubles.get(i1);
-//                m[i][i1] = aDouble;
-//            }
-//        }
-//        return findDeterminant(m, m.length);
         double res = 1;
         for (int i = 0; i < matrix.size(); i++) {
             ArrayList<Double> doubles = matrix.get(i);
@@ -144,23 +135,6 @@ public class Main {
         return res;
     }
 
-    private static double findDeterminant(double[][] a, int n) {
-        int i, j;
-        double det = 0;
-        double[][] matr;
-        if (n == 2) det = a[0][0] * a[1][1] - a[0][1] * a[1][0];
-        else {
-            matr = new double[n - 1][n - 1];
-            for (i = 0; i < n; ++i) {
-                for (j = 0; j < n - 1; ++j) {
-                    if (j < i) matr[j] = a[j];
-                    else matr[j] = a[j + 1];
-                }
-                det += Math.pow(-1, (i + j)) * findDeterminant(matr, n - 1) * a[i][n - 1];
-            }
-        }
-        return det;
-    }
 
     private static ArrayList<Double> accuracy(ArrayList<Double> vars) {
         ArrayList<Double> acc_list = new ArrayList<>();
