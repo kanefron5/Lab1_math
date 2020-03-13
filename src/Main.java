@@ -2,28 +2,35 @@ import java.io.File;
 import java.util.*;
 
 public class Main {
-    private static ArrayList<ArrayList<Double>> matrix_start = new ArrayList<>();
-    private static ArrayList<ArrayList<Double>> matrix = new ArrayList<>();
+    private static ArrayList<ArrayList<Double>> arr_matrix = new ArrayList<>();
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        int inputMethod = -1;
+        Boolean isInputFromFile = null; //false - клава, true - файл
 
-        while (inputMethod == -1) {
+        while (isInputFromFile == null) {
             showSelectInputMessage();
             try {
                 int i = Integer.parseInt(scanner.nextLine());
-                if (i == 0 || i == 1) inputMethod = i;
-                else throw new Exception("Ошибка ввода!");
+                switch (i) {
+                    case 0:
+                        isInputFromFile = false;
+                        break;
+                    case 1:
+                        isInputFromFile = true;
+                        break;
+                    default:
+                        throw new Exception("Ошибка ввода!");
+                }
             } catch (NoSuchElementException e) {
                 System.exit(-1);
             } catch (Exception ignored) {
             }
         }
 
-        System.out.printf("Выбран метод ввода %s\n", (inputMethod == 0 ? "с клавиатуры" : "из файла"));
+        System.out.printf("Выбран метод ввода %s\n", (!isInputFromFile ? "с клавиатуры" : "из файла"));
 
-        if (inputMethod == 1) {
+        if (isInputFromFile) {
             System.out.println("Файл должен иметь следующий формат:\n1) На первой строке указано число n - размерность матрицы\n" +
                     "2) На следующих n строках находится n+1 чисел - элементы матрицы, где последнее число строки является свободным членом");
             System.out.println("Введите имя файла");
@@ -36,7 +43,7 @@ public class Main {
                 System.exit(-1);
             }
         }
-        if (inputMethod == 0) System.out.println("Введите размерность n");
+        if (!isInputFromFile) System.out.println("Введите размерность n");
 
         int n = -1;
         while (n == -1) {
@@ -52,7 +59,7 @@ public class Main {
         }
 
         Boolean isRandom = null;
-        if (inputMethod == 0) while (isRandom == null) {
+        if (!isInputFromFile) while (isRandom == null) {
             System.out.print("Заполнить матрицу случайными коэфицентами? (Y/N): ");
             try {
                 String letter = scanner.nextLine();
@@ -67,11 +74,11 @@ public class Main {
             }
         }
 
-        if (inputMethod == 1 || !isRandom) {
-            if (inputMethod == 0)
+        if (isInputFromFile || !isRandom) {
+            if (!isInputFromFile)
                 System.out.printf("Введите %d строк по %d чисел, разделенных пробелом, где последнее число в строке - свободный член\n", n, n + 1);
             for (int i = 0; i < n; i++) {
-                if (inputMethod == 0) System.out.printf("Строка %d: ", i + 1);
+                if (!isInputFromFile) System.out.printf("Строка %d: ", i + 1);
                 try {
                     ArrayList<Double> row = new ArrayList<>();
                     String line = scanner.nextLine();
@@ -81,12 +88,12 @@ public class Main {
                         double elem = Double.parseDouble(numbers[j].replace(",", "."));
                         row.add(elem);
                     }
-                    matrix.add(row);
+                    arr_matrix.add(row);
                 } catch (NoSuchElementException ignored) {
-                    if (inputMethod == 1) System.out.println("Неверный формат файла");
+                    if (isInputFromFile) System.out.println("Неверный формат файла");
                     System.exit(-1);
                 } catch (Exception e) {
-                    if (inputMethod == 1) {
+                    if (isInputFromFile) {
                         System.out.println("Неверный формат файла");
                         System.exit(-1);
                     }
@@ -101,101 +108,24 @@ public class Main {
             for (int i = 0; i < n; i++) {
                 ArrayList<Double> row = new ArrayList<>();
                 for (int j = 0; j < n + 1; j++) row.add(rangeMin + (rangeMax - rangeMin) * random.nextDouble());
-                matrix.add(row);
+                arr_matrix.add(row);
             }
         }
-        matrix_start = new ArrayList<>(matrix);
-        printMatrix("Введенная матрица: ");
-        gauss(matrix);
-        System.out.printf("Определитель матрицы = %f\n", findDeterminant(matrix));
-        printMatrix("Треугольная матрица: ");
-        ArrayList<Double> vars = getVars();
-        System.out.printf("Решение системы: %s\n", vars);
-        System.out.printf("Невязки: %s\n", accuracy(vars));
-    }
 
-    private static void selectMainElement(int row) {
-        Double max = null;
-        for (int i = row; i < matrix.size(); i++) {
-            ArrayList<Double> doubles = matrix.get(i);
-            if (max == null || Math.abs(doubles.get(row)) > Math.abs(max)) {
-                max = doubles.get(row);
-                matrix.remove(doubles);
-                matrix.add(row, doubles);
-            }
+        Matrix matrix = new Matrix(arr_matrix);
+        System.out.println("Введенная матрица: ");
+        System.out.println(matrix.toString());
+        matrix.gauss();
+        try {
+            System.out.printf("Определитель матрицы = %f\n", matrix.getDeterminant());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.exit(-1);
         }
-    }
-
-    public static double findDeterminant(ArrayList<ArrayList<Double>> matrix) {
-        double res = 1;
-        for (int i = 0; i < matrix.size(); i++) {
-            ArrayList<Double> doubles = matrix.get(i);
-            res *= doubles.get(i);
-        }
-        return res;
-    }
-
-
-    private static ArrayList<Double> accuracy(ArrayList<Double> vars) {
-        ArrayList<Double> acc_list = new ArrayList<>();
-
-        for (ArrayList<Double> doubles : matrix_start) {
-            double adc = 0.0;
-            for (int i = 0; i < doubles.size() - 1; i++) {
-                double v = doubles.get(i) * vars.get(i);
-                v = (double) Math.round(v * 1000d) / 1000d;
-                adc += v;
-            }
-            acc_list.add(Double.sum(-adc, (double) Math.round(doubles.get(doubles.size() - 1) * 1000d) / 1000d));
-        }
-        return acc_list;
-    }
-
-    public static void gauss(ArrayList<ArrayList<Double>> matrix) {
-        for (int i = 0; i < matrix.size(); i++) {
-            selectMainElement(i);
-            ArrayList<Double> i_line = matrix.get(i);
-
-            for (int m = i + 1; m < matrix.size(); m++) {
-                ArrayList<Double> m_line = matrix.get(m);
-                double v = m_line.get(i) / -i_line.get(i);
-                for (int j = 0; j < m_line.size(); j++) {
-                    m_line.set(j, m_line.get(j) + (i_line.get(j) * v));
-                }
-            }
-        }
-    }
-
-    public static ArrayList<Double> getVars() {
-        HashMap<Integer, Double> vars = new HashMap<>();
-        for (int i = matrix.size() - 1; i >= 0; i--) {
-            ArrayList<Double> doubles = matrix.get(i);
-            double free_elem = (double) Math.round(doubles.get(doubles.size() - 1) * 1000d) / 1000d;
-            double now_var = (double) Math.round(doubles.get(i) * 1000d) / 1000d;
-            vars.put(i, (free_elem - arrAdc(vars, doubles)) / now_var);
-        }
-        return new ArrayList<>(vars.values());
-    }
-
-    private static double arrAdc(HashMap<Integer, Double> vars, ArrayList<Double> ks) {
-        double adc = 0;
-        for (int i = 0; i < ks.size(); i++) {
-            double var = 0;
-            if (vars.containsKey(i)) var = vars.get(i) * ks.get(i);
-            adc += var;
-        }
-        return adc;
-    }
-
-    private static void printMatrix(String message) {
-        System.out.println(message);
-        for (ArrayList<Double> doubles : matrix) {
-            for (int i = 0; i < doubles.size(); i++) {
-                Double aDouble = doubles.get(i);
-                if (i == matrix.size()) System.out.printf("\t|%10.4f\n", aDouble);
-                else System.out.printf("%10.4f", aDouble);
-            }
-        }
+        System.out.println("Треугольная матрица: ");
+        System.out.println(matrix.toString());
+        System.out.printf("Решение системы: %s\n", matrix.getVars());
+        System.out.printf("Невязки: %s\n", matrix.getResidual());
     }
 
     private static void showSelectInputMessage() {
