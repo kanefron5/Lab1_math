@@ -2,9 +2,28 @@ import java.io.File;
 import java.util.*;
 
 public class Main {
-    private static ArrayList<ArrayList<Double>> arr_matrix = new ArrayList<>();
 
     public static void main(String[] args) {
+
+        Matrix matrix = new Matrix(inputData());
+        System.out.println("Введенная матрица: ");
+        System.out.println(matrix.toString());
+        matrix.gauss();
+        try {
+            System.out.printf("Определитель матрицы = %f\n", matrix.getDeterminant());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.exit(-1);
+        }
+        System.out.println("Треугольная матрица: ");
+        System.out.println(matrix.toString());
+        System.out.printf("Решение системы: %s\n", matrix.getVars());
+        System.out.printf("Невязки: %s\n", matrix.getResidual());
+    }
+
+    private static ArrayList<ArrayList<Double>> inputData(){
+        ArrayList<ArrayList<Double>> arr_matrix = new ArrayList<>();
+
         Scanner scanner = new Scanner(System.in);
         Boolean isInputFromFile = null; //false - клава, true - файл
 
@@ -111,23 +130,8 @@ public class Main {
                 arr_matrix.add(row);
             }
         }
-
-        Matrix matrix = new Matrix(arr_matrix);
-        System.out.println("Введенная матрица: ");
-        System.out.println(matrix.toString());
-        matrix.gauss();
-        try {
-            System.out.printf("Определитель матрицы = %f\n", matrix.getDeterminant());
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            System.exit(-1);
-        }
-        System.out.println("Треугольная матрица: ");
-        System.out.println(matrix.toString());
-        System.out.printf("Решение системы: %s\n", matrix.getVars());
-        System.out.printf("Невязки: %s\n", matrix.getResidual());
+        return arr_matrix;
     }
-
     private static void showSelectInputMessage() {
         System.out.println("Выберите метод ввода данных:");
         System.out.println("0 - с клавиатуры");
