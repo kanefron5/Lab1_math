@@ -31,8 +31,10 @@ public class Matrix {
             double sum = 0.0;
             ArrayList<Double> vars = getVars();
             for (int i = 0; i < doubles.size() - 1; i++)
-                sum += round(doubles.get(i) * vars.get(i));
-            acc_list.add(Double.sum(-sum, round(doubles.get(doubles.size() - 1))));
+//                sum += round(doubles.get(i) * vars.get(i));
+                sum += doubles.get(i) * vars.get(i);
+//            acc_list.add(round(Double.sum(-sum, round(doubles.get(doubles.size() - 1)))));
+            acc_list.add(Double.sum(-sum, doubles.get(doubles.size() - 1)));
         }
         return acc_list;
     }
@@ -41,16 +43,17 @@ public class Matrix {
         HashMap<Integer, Double> vars = new HashMap<>();
         for (int i = matrix.size() - 1; i >= 0; i--) {
             ArrayList<Double> doubles = matrix.get(i);
-            double free_elem = round(doubles.get(doubles.size() - 1));
-            double now_var = round(doubles.get(i));
-            vars.put(i, (free_elem - getArrSum(vars, doubles)) / now_var);
+            double free_elem = doubles.get(doubles.size() - 1);
+            double now_var = doubles.get(i);
+            vars.put(i, round((free_elem - getArrSum(vars, doubles)) / now_var));
         }
         return new ArrayList<>(vars.values());
     }
 
 
     private double round(double num) {
-        double accuracy = 1_000d;
+        double accuracy = 1_0000d;
+//        return num;
         return (double) Math.round(num * accuracy) / accuracy;
     }
 
@@ -75,7 +78,7 @@ public class Matrix {
             }
         }
     }
-
+ //A[i][j]1 = A[i][j]0 - A[i][1]0 / A[1][1]0 * A[1][j]0
     public void gauss() {
         for (int i = 0; i < matrix.size(); i++) {
             selectMainElement(i);

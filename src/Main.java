@@ -17,11 +17,22 @@ public class Main {
         }
         System.out.println("Треугольная матрица: ");
         System.out.println(matrix.toString());
-        System.out.printf("Решение системы: %s\n", matrix.getVars());
-        System.out.printf("Невязки: %s\n", matrix.getResidual());
+
+        System.out.println("Решение системы:");
+        ArrayList<Double> vars = matrix.getVars();
+        for (int i = 0; i < vars.size(); i++) {
+            System.out.printf("X%d = %s\n", i, vars.get(i));
+        }
+
+        System.out.println("Невязки:");
+        ArrayList<Double> residual = matrix.getResidual();
+        for (int i = 0; i < residual.size(); i++) {
+            System.out.printf("X%d = %s\n", i, residual.get(i));
+        }
+
     }
 
-    private static ArrayList<ArrayList<Double>> inputData(){
+    private static ArrayList<ArrayList<Double>> inputData() {
         ArrayList<ArrayList<Double>> arr_matrix = new ArrayList<>();
 
         Scanner scanner = new Scanner(System.in);
@@ -132,6 +143,7 @@ public class Main {
         }
         return arr_matrix;
     }
+
     private static void showSelectInputMessage() {
         System.out.println("Выберите метод ввода данных:");
         System.out.println("0 - с клавиатуры");
